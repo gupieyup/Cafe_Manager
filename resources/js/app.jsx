@@ -5,7 +5,7 @@ import { render } from "react-dom";
 import "../css/app.css";
 
 createInertiaApp({
-    resolve: (name) => import(`./Pages/${name}`),
+    resolve: (name) => import(`./Pages/${name}.jsx`),
     setup({ el, App, props }) {
         render(<App {...props} />, el);
     },
