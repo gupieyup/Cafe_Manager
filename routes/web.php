@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\KasirController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ManagerController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,4 +17,15 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [Controller::class,'index'])->name('index');
+// Routes Auth
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::middleware('auth')->group(function () {
+    // Routes Manager
+    Route::get('/manager/home', [ManagerController::class, 'index'])->name('home.manager');
+
+    // Routes Kasir
+    Route::get('/kasir/home', [KasirController::class, 'index'])->name('home.kasir');
+});
