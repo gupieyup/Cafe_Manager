@@ -14,14 +14,8 @@ class ManagerController extends Controller
     {
         $user = Auth::user();
 
-        // Ambil semua data menu & transaksi
-        $menus = Menu::all();
-        $transaksis = Transaksi::with('kasir')->latest()->get();
-
         return Inertia::render('Manager/Home/page', [
             'user' => $user,
-            'menus' => $menus,
-            'transaksis' => $transaksis,
         ]);
     }
 }

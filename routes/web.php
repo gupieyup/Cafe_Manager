@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManagerController;
@@ -17,15 +18,26 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Routes Auth
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+// Guest routes (not authenticated)
+Route::middleware('guest')->group(function () {
+    Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth');
+    Route::get('/login', [LoginController::class, 'login'])->name('login');
+    Route::post('/actionLogin', [LoginController::class, 'actionLogin'])->name('actionLogin');
+});
 
+// Authenticated routes
 Route::middleware('auth')->group(function () {
-    // Routes Manager
-    Route::get('/manager/home', [ManagerController::class, 'index'])->name('home.manager');
+    Route::post('/logout', [LoginController::class, 'actionLogout'])->name('logout');
 
-    // Routes Kasir
-    Route::get('/kasir/home', [KasirController::class, 'index'])->name('home.kasir');
+       // Manager routes
+        Route::middleware('role:manajer')->prefix('manager')->name('manager.')->group(function () {
+            Route::get('/home', [ManagerController::class, 'index'])->name('home');
+
+    });
+
+        // Kasir routes
+        Route::middleware('role:kasir')->prefix('kasir')->name('kasir.')->group(function () {
+            Route::get('/home', [KasirController::class, 'index'])->name('home');
+    
+    });
 });

@@ -4,44 +4,62 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 use Inertia\Inertia;
 
 class LoginController extends Controller
 {
-    public function showLoginForm()
+    public function login()
     {
-        return Inertia::render('Login');
+        if (Auth::check()) {
+            return redirect('/');
+        } else {
+            return inertia('Login');
+        }
     }
 
-    public function login(Request $request)
+    public function actionLogin(Request $request)
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        // Validasi input
+        $request->validate([
+            'email' => 'required|string',
+            'password' => 'required|string',
         ]);
 
-        if (Auth::attempt($credentials)) {
+        $credentials = [
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+        ];
+
+        if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
+
+            // Flash message sukses
+            Session::flash('success', 'Login berhasil! Selamat datang.');
 
             // Redirect sesuai role
             if (Auth::user()->role === 'manajer') {
-                return redirect()->route('home.manager');
+                return redirect()->route('manager.home');
             } else {
-                return redirect()->route('home.kasir');
+                return redirect()->route('kasir.home');
             }
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ])->onlyInput('email');
+        // Jika login gagal, return dengan error
+        return back()
+            ->withErrors([
+                'email' => 'Email atau password yang Anda masukkan salah.',
+            ])
+            ->withInput($request->only('email'))
+            ->with('error', 'Login gagal. Silakan periksa kembali email dan password Anda.');
     }
 
-    public function logout(Request $request)
+    public function actionLogout(Request $request)
     {
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->with('info', 'Anda telah berhasil logout.');
     }
 }

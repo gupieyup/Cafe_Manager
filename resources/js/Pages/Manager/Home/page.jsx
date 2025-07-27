@@ -1,9 +1,9 @@
 import React from "react";
-import { router } from "@inertiajs/react";
+import { Inertia } from "@inertiajs/inertia";
 
-export default function Home({ user, menus, transaksis }) {
+export default function Home({ user }) {
     const handleLogout = () => {
-        router.post("/logout");
+        Inertia.post("/logout");
     };
 
     return (
@@ -18,54 +18,6 @@ export default function Home({ user, menus, transaksis }) {
                 >
                     Logout
                 </button>
-            </div>
-
-            <div className="bg-white p-4 rounded shadow-md mb-6">
-                <h2 className="text-xl font-bold mb-3">Daftar Menu</h2>
-                <table className="w-full border">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="p-2 border">Nama</th>
-                            <th className="p-2 border">Kategori</th>
-                            <th className="p-2 border">Harga</th>
-                            <th className="p-2 border">Stok</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {menus.map(menu => (
-                            <tr key={menu.id}>
-                                <td className="p-2 border">{menu.namaMenu}</td>
-                                <td className="p-2 border">{menu.kategori}</td>
-                                <td className="p-2 border">Rp {menu.harga}</td>
-                                <td className="p-2 border">{menu.jumlahStok}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            <div className="bg-white p-4 rounded shadow-md">
-                <h2 className="text-xl font-bold mb-3">Semua Transaksi</h2>
-                <table className="w-full border">
-                    <thead>
-                        <tr className="bg-gray-200">
-                            <th className="p-2 border">Waktu</th>
-                            <th className="p-2 border">Kasir</th>
-                            <th className="p-2 border">Qty</th>
-                            <th className="p-2 border">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {transaksis.map(tx => (
-                            <tr key={tx.id}>
-                                <td className="p-2 border">{tx.waktu}</td>
-                                <td className="p-2 border">{tx.kasir?.email}</td>
-                                <td className="p-2 border">{tx.qty}</td>
-                                <td className="p-2 border">Rp {tx.hargaTotal}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
             </div>
         </div>
     );

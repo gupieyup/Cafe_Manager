@@ -13,12 +13,8 @@ class KasirController extends Controller
     {
         $user = Auth::user();
 
-        // Kasir hanya melihat transaksi miliknya
-        $transaksis = Transaksi::where('idKasir', $user->id)->latest()->get();
-
-        return Inertia::render('Kasir/Home', [
+        return Inertia::render('Kasir/Home/page', [
             'user' => $user,
-            'transaksis' => $transaksis,
         ]);
     }
 }
