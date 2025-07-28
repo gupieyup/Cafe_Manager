@@ -11,10 +11,10 @@ class KasirController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $kasir = Auth::user();
 
         return Inertia::render('Kasir/Home/page', [
-            'user' => $user,
+            'kasir' => $kasir,
         ]);
     }
 }
