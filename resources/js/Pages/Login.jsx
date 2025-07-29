@@ -176,30 +176,30 @@ const Login = () => {
     };
 
     return (
-        <main className="min-h-screen bg-gradient-to-br from-violet-50 via-indigo-50 to-cyan-50 flex items-center justify-center p-4 relative overflow-hidden">
+        <main className="min-h-screen bg-gradient-to-br from-pink-50 via-rose-50 to-pink-100 flex items-center justify-center p-4 relative overflow-hidden">
             {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-30">
-                <div className="absolute top-0 -left-4 w-72 h-72 bg-purple-300 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
-                <div className="absolute top-0 -right-4 w-72 h-72 bg-yellow-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
+            <div className="absolute inset-0 opacity-40">
+                <div className="absolute top-0 -left-4 w-72 h-72 bg-pink-200 rounded-full mix-blend-multiply filter blur-xl animate-blob"></div>
+                <div className="absolute top-0 -right-4 w-72 h-72 bg-rose-200 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-2000"></div>
                 <div className="absolute -bottom-8 left-20 w-72 h-72 bg-pink-300 rounded-full mix-blend-multiply filter blur-xl animate-blob animation-delay-4000"></div>
             </div>
 
             <div className="w-full max-w-md relative z-10">
                 {/* Logo/Brand Section */}
                 <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 rounded-2xl mb-6 shadow-2xl shadow-indigo-500/25">
+                    <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 rounded-2xl mb-6 shadow-2xl shadow-pink-500/25">
                         <Icon
                             icon="lucide:coffee"
                             className="w-10 h-10 text-white"
                         />
                     </div>
-                    <h1 className="text-4xl font-bold bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 bg-clip-text text-transparent mb-2">
+                    <h1 className="text-4xl font-bold bg-gradient-to-r from-pink-500 via-rose-500 to-pink-600 bg-clip-text text-transparent mb-2">
                         Cafe Manager
                     </h1>
                 </div>
 
                 {/* Login Card */}
-                <div className="bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-white/30 shadow-indigo-500/10">
+                <div className="bg-white/90 backdrop-blur-xl shadow-2xl rounded-3xl p-8 border border-white/30 shadow-pink-500/10">
                     <AlertComponent alert={alert} onClose={closeAlert} />
 
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -215,7 +215,7 @@ const Login = () => {
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <Icon
                                         icon="lucide:user"
-                                        className="w-5 h-5 transition-colors text-gray-400 group-hover:text-indigo-500"
+                                        className="w-5 h-5 transition-colors text-gray-400 group-hover:text-pink-500"
                                     />
                                 </div>
                                 <input
@@ -224,7 +224,7 @@ const Login = () => {
                                     name="email"
                                     onChange={handleInputChange}
                                     onBlur={handleInputBlur}
-                                    className="w-full pl-12 pr-4 py-4 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder:text-gray-400 border-gray-200 bg-white/70 hover:border-gray-300 hover:bg-white"
+                                    className="w-full pl-12 pr-4 py-4 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 placeholder:text-gray-400 border-gray-200 bg-white/70 hover:border-gray-300 hover:bg-white"
                                     placeholder="masukkan email anda"
                                 />
                             </div>
@@ -242,7 +242,7 @@ const Login = () => {
                                 <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                     <Icon
                                         icon="lucide:lock"
-                                        className="w-5 h-5 transition-colors text-gray-400 group-hover:text-indigo-500"
+                                        className="w-5 h-5 transition-colors text-gray-400 group-hover:text-pink-500"
                                     />
                                 </div>
                                 <input
@@ -251,7 +251,7 @@ const Login = () => {
                                     name="password"
                                     onChange={handleInputChange}
                                     onBlur={handleInputBlur}
-                                    className="w-full pl-12 pr-14 py-4 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 placeholder:text-gray-400 border-gray-200 bg-white/70 hover:border-gray-300 hover:bg-white"
+                                    className="w-full pl-12 pr-14 py-4 border-2 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500/20 focus:border-pink-500 placeholder:text-gray-400 border-gray-200 bg-white/70 hover:border-gray-300 hover:bg-white"
                                     placeholder="Masukkan password Anda"
                                 />
                                 <div className="absolute inset-y-0 right-0 flex items-center">
@@ -260,7 +260,7 @@ const Login = () => {
                                         onClick={() =>
                                             setShowPassword(!showPassword)
                                         }
-                                        className="pr-4 text-gray-400 hover:text-indigo-500 transition-colors"
+                                        className="pr-4 text-gray-400 hover:text-pink-500 transition-colors"
                                     >
                                         <Icon
                                             icon={
@@ -279,7 +279,7 @@ const Login = () => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full mt-2 bg-gradient-to-r from-violet-600 via-indigo-600 to-purple-600 text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:shadow-indigo-500/25 transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100"
+                            className="w-full mt-2 bg-gradient-to-r from-pink-400 via-rose-400 to-pink-500 text-white py-4 px-6 rounded-xl font-semibold text-lg shadow-lg hover:shadow-xl hover:shadow-pink-500/25 transform hover:-translate-y-1 hover:scale-[1.02] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-pink-500/50 focus:ring-offset-2 focus:ring-offset-white disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:hover:scale-100"
                         >
                             {loading ? (
                                 <div className="flex items-center justify-center">
