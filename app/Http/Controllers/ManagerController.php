@@ -12,10 +12,10 @@ class ManagerController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $manager = Auth::user();
 
         return Inertia::render('Manager/Home/page', [
-            'user' => $user,
+            'manager' => $manager,
         ]);
     }
 }

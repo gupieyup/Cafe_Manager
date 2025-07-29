@@ -1,7 +1,6 @@
 import React from "react";
 import { Inertia } from "@inertiajs/inertia"
 import { FaHome } from "react-icons/fa";
-import { MdFastfood } from "react-icons/md";
 import { TbLogout } from "react-icons/tb";
 import { IoReceipt } from "react-icons/io5";
 import { FaHistory } from "react-icons/fa";
@@ -48,17 +47,6 @@ const SidebarKasir = ({ kasir }) => {
                         >
                             <FaHome style={{ fontSize: "20px", color: "#000000" }} />
                             <span className="text-md">Home</span>
-                        </a>
-                    </div>
-                </div>
-                <div className="mb-2">
-                    <div className="flex items-center font-medium space-y-1">
-                        <a
-                            href="#"
-                            className="flex items-center w-full gap-2 px-3 py-3 bg-white text-gray-800 rounded-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200 shadow-sm"
-                        >
-                            <MdFastfood style={{ fontSize: "20px", color: "#000000" }} />
-                            <span className="text-md">Menu</span>
                         </a>
                     </div>
                 </div>

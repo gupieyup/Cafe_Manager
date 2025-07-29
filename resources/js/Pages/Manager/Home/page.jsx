@@ -1,24 +1,45 @@
-import React from "react";
 import { Inertia } from "@inertiajs/inertia";
+import ManagerLayout from "../../../Layouts/ManagerLayout";
+import React from "react"; 
 
-export default function Home({ user }) {
+export default function Home({ manager }) {
     const handleLogout = () => {
         Inertia.post("/logout");
     };
 
     return (
-        <div className="p-6 bg-gray-100 min-h-screen">
-            <div className="bg-white p-4 rounded shadow-md mb-6">
-                <h1 className="text-2xl font-bold text-blue-700">Dashboard Manager</h1>
-                <p className="mt-2"><strong>Email:</strong> {user.email}</p>
-                <p><strong>Role:</strong> {user.role}</p>
-                <button
-                    onClick={handleLogout}
-                    className="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700"
-                >
-                    Logout
-                </button>
+        <ManagerLayout kasir={manager}>
+            <div className="p-6 min-h-screen" style={{ backgroundColor: "#fce7f3" }}>
+                <div className="bg-white p-4 rounded shadow-md mb-6" style={{ borderColor: "#FFD1DC", borderWidth: "2px" }}>
+                    <h1 className="text-2xl font-bold text-gray-800">
+                        Dashboard Manager
+                    </h1>
+                    <p className="mt-2 text-gray-700">
+                        <strong>Email:</strong> {manager.email}
+                    </p>
+                    <p className="text-gray-700">
+                        <strong>Role:</strong> {manager.role}
+                    </p>
+                    <button
+                        onClick={handleLogout}
+                        className="mt-4 text-gray-800 px-4 py-2 rounded transition-colors duration-200"
+                        style={{ 
+                            backgroundColor: "#f8bbd9",
+                            border: "1px solid #f3a6c7"
+                        }}
+                        onMouseEnter={(e) => {
+                            e.target.style.backgroundColor = "#f3a6c7";
+                            e.target.style.borderColor = "#ec93b8";
+                        }}
+                        onMouseLeave={(e) => {
+                            e.target.style.backgroundColor = "#f8bbd9";
+                            e.target.style.borderColor = "#f3a6c7";
+                        }}
+                    >
+                        Logout
+                    </button>
+                </div>
             </div>
-        </div>
+        </ManagerLayout>
     );
 }
