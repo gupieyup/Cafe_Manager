@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HistoryController;
+use App\Http\Controllers\HistoryManagerController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\LoginController;
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:manajer')->prefix('manager')->name('manager.')->group(function () {
             Route::get('/home', [ManagerController::class, 'index'])->name('home');
             Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+            Route::get('/history', [HistoryManagerController::class, 'index'])->name('history');
 
     });
 
