@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\HistoryController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -38,6 +40,7 @@ Route::middleware('auth')->group(function () {
         // Kasir routes
         Route::middleware('role:kasir')->prefix('kasir')->name('kasir.')->group(function () {
             Route::get('/home', [KasirController::class, 'index'])->name('home');
-    
+            Route::get('/transaction', [TransactionController::class, 'index'])->name('transaction');
+            Route::get('/history', [HistoryController::class, 'index'])->name('history');
     });
 });
