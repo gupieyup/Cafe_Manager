@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\KasirController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\ManagerController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TransactionController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,6 +35,7 @@ Route::middleware('auth')->group(function () {
        // Manager routes
         Route::middleware('role:manajer')->prefix('manager')->name('manager.')->group(function () {
             Route::get('/home', [ManagerController::class, 'index'])->name('home');
+            Route::get('/menu', [MenuController::class, 'index'])->name('menu');
 
     });
 

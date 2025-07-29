@@ -54,7 +54,7 @@ const SidebarManager = ({ manager }) => {
                 <div className="mb-2">
                     <div className="flex items-center font-medium space-y-1">
                         <a
-                            href="#"
+                            href="/manager/menu"
                             className="flex items-center w-full gap-2 px-3 py-3 bg-white text-gray-800 rounded-lg hover:bg-gray-50 transition-colors duration-200 border border-gray-200 shadow-sm"
                         >
                             <MdFastfood style={{ fontSize: "20px", color: "#000000" }} />
