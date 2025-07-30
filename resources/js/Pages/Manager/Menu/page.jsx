@@ -1,6 +1,6 @@
 import { Inertia } from "@inertiajs/inertia";
 import ManagerLayout from "../../../Layouts/ManagerLayout";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export default function Menu({ manager, menus, flash }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +15,10 @@ export default function Menu({ manager, menus, flash }) {
     const [newStock, setNewStock] = useState(0);
     const [availableCategories, setAvailableCategories] = useState([]);
     const [alerts, setAlerts] = useState([]);
+    const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+    // Track flash messages to prevent duplicates
+    const processedFlash = useRef(new Set());
 
     const [formData, setFormData] = useState({
         namaMenu: "",
@@ -40,7 +44,6 @@ export default function Menu({ manager, menus, flash }) {
         setAlerts((prev) => prev.filter((a) => a.id !== id));
     };
 
-
     // Initialize categories from menus
     useEffect(() => {
         const uniqueCategories = [
@@ -48,6 +51,39 @@ export default function Menu({ manager, menus, flash }) {
         ].filter((cat) => cat);
         setAvailableCategories(uniqueCategories);
     }, [menus]);
+
+    // Handle flash messages without duplication - improved
+    useEffect(() => {
+        if (flash) {
+            // Create a unique key based on flash content and timestamp
+            const flashKey = `${JSON.stringify(flash)}-${Date.now()}`;
+
+            // Clear previous flash tracking periodically to prevent memory buildup
+            if (processedFlash.current.size > 10) {
+                processedFlash.current.clear();
+            }
+
+            if (!processedFlash.current.has(flashKey)) {
+                processedFlash.current.add(flashKey);
+
+                // Small delay to ensure this runs after any duplicate attempts
+                setTimeout(() => {
+                    if (flash?.success) {
+                        showAlert(flash.success, "success");
+                    }
+                    if (flash?.error) {
+                        showAlert(flash.error, "error");
+                    }
+                    if (flash?.warning) {
+                        showAlert(flash.warning, "warning");
+                    }
+                    if (flash?.info) {
+                        showAlert(flash.info, "info");
+                    }
+                }, 10);
+            }
+        }
+    }, [flash]);
 
     // Filter and sort menus
     const filteredMenus = menus
@@ -117,43 +153,27 @@ export default function Menu({ manager, menus, flash }) {
         if (isEditMode && selectedMenu) {
             Inertia.put(`/manager/menu/${selectedMenu.id}`, formData, {
                 onSuccess: () => {
-                    showAlert("Menu berhasil diperbarui!", "success");
                     setIsModalOpen(false);
-                },
-                onError: () => {
-                    showAlert(
-                        "Gagal memperbarui menu. Silakan coba lagi.",
-                        "error"
-                    );
                 },
             });
         } else {
             Inertia.post("/manager/menu", formData, {
                 onSuccess: () => {
-                    showAlert("Menu baru berhasil ditambahkan!", "success");
                     setIsModalOpen(false);
-                },
-                onError: () => {
-                    showAlert(
-                        "Gagal menambahkan menu. Silakan coba lagi.",
-                        "error"
-                    );
                 },
             });
         }
     };
 
-    const handleDelete = (id, menuName) => {
-        if (confirm(`Apakah Anda yakin ingin menghapus menu "${menuName}"?`)) {
-            Inertia.delete(`/manager/menu/${id}`, {
+    const openDeleteConfirm = (menu) => {
+        setDeleteConfirm(menu);
+    };
+
+    const handleDelete = () => {
+        if (deleteConfirm) {
+            Inertia.delete(`/manager/menu/${deleteConfirm.id}`, {
                 onSuccess: () => {
-                    showAlert("Menu berhasil dihapus!", "success");
-                },
-                onError: () => {
-                    showAlert(
-                        "Gagal menghapus menu. Silakan coba lagi.",
-                        "error"
-                    );
+                    setDeleteConfirm(null);
                 },
             });
         }
@@ -168,20 +188,16 @@ export default function Menu({ manager, menus, flash }) {
             },
             {
                 onSuccess: () => {
-                    showAlert(
-                        `Stok ${stockMenu.namaMenu} berhasil diperbarui!`,
-                        "success"
-                    );
                     setIsStockModalOpen(false);
-                },
-                onError: () => {
-                    showAlert(
-                        "Gagal memperbarui stok. Silakan coba lagi.",
-                        "error"
-                    );
                 },
             }
         );
+    };
+
+    const openStockModal = (menu) => {
+        setStockMenu(menu);
+        setNewStock(menu.jumlahStok);
+        setIsStockModalOpen(true);
     };
 
     const formatRupiah = (number) => {
@@ -207,22 +223,6 @@ export default function Menu({ manager, menus, flash }) {
             color: "bg-emerald-50 text-emerald-700 border-emerald-200",
         };
     };
-
-    // Show flash messages
-    useEffect(() => {
-        if (flash?.success) {
-            showAlert(flash.success, "success");
-        }
-        if (flash?.error) {
-            showAlert(flash.error, "error");
-        }
-        if (flash?.warning) {
-            showAlert(flash.warning, "warning");
-        }
-        if (flash?.info) {
-            showAlert(flash.info, "info");
-        }
-    }, [flash]);
 
     return (
         <ManagerLayout manager={manager}>
@@ -642,9 +642,14 @@ export default function Menu({ manager, menus, flash }) {
                                                     </span>
                                                 </td>
                                                 <td className="px-6 py-5">
-                                                    <span className="font-medium text-gray-900">
+                                                    <button
+                                                        onClick={() =>
+                                                            openStockModal(menu)
+                                                        }
+                                                        className="font-medium text-blue-600 hover:text-blue-700 hover:underline"
+                                                    >
                                                         {menu.jumlahStok}
-                                                    </span>
+                                                    </button>
                                                 </td>
                                                 <td className="px-6 py-5">
                                                     <span
@@ -682,9 +687,8 @@ export default function Menu({ manager, menus, flash }) {
                                                         </button>
                                                         <button
                                                             onClick={() =>
-                                                                handleDelete(
-                                                                    menu.id,
-                                                                    menu.namaMenu
+                                                                openDeleteConfirm(
+                                                                    menu
                                                                 )
                                                             }
                                                             className="flex items-center gap-1 px-3 py-1.5 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors text-sm font-medium"
@@ -941,6 +945,71 @@ export default function Menu({ manager, menus, flash }) {
                                         </button>
                                     </div>
                                 </form>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Delete Confirmation Modal */}
+                    {deleteConfirm && (
+                        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                            <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4">
+                                <div className="p-6">
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="p-3 bg-red-100 rounded-full">
+                                            <svg
+                                                className="w-6 h-6 text-red-600"
+                                                fill="none"
+                                                stroke="currentColor"
+                                                viewBox="0 0 24 24"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    strokeWidth={2}
+                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.732-.833-2.5 0L4.268 16.5c-.77.833.192 2.5 1.732 2.5z"
+                                                />
+                                            </svg>
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-gray-900">
+                                                Konfirmasi Hapus
+                                            </h3>
+                                            <p className="text-sm text-gray-600">
+                                                Tindakan ini tidak dapat
+                                                dibatalkan
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6">
+                                        <p className="text-sm text-red-800">
+                                            Apakah Anda yakin ingin menghapus
+                                            menu{" "}
+                                            <span className="font-semibold">
+                                                "{deleteConfirm.namaMenu}"
+                                            </span>
+                                            ? Menu yang sudah dihapus tidak
+                                            dapat dikembalikan.
+                                        </p>
+                                    </div>
+
+                                    <div className="flex gap-3">
+                                        <button
+                                            onClick={handleDelete}
+                                            className="flex-1 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-xl transition-colors font-medium shadow-sm"
+                                        >
+                                            Ya, Hapus Menu
+                                        </button>
+                                        <button
+                                            onClick={() =>
+                                                setDeleteConfirm(null)
+                                            }
+                                            className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 px-4 rounded-xl transition-colors font-medium"
+                                        >
+                                            Batal
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     )}
