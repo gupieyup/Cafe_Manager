@@ -20,7 +20,7 @@ class TransaksiSeeder extends Seeder
 
         if ($kasir) {
             Transaksi::create([
-                'waktu'      => '10:15:00',
+                'waktu'      => '2025-06-01 06:15:00',
                 'qty'        => 2,
                 'hargaItem'  => 25000,
                 'hargaTotal' => 50000,
@@ -28,7 +28,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '11:30:00',
+                'waktu'      => '2025-06-02 11:30:00',
                 'qty'        => 1,
                 'hargaItem'  => 20000,
                 'hargaTotal' => 20000,
@@ -36,7 +36,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '12:05:00',
+                'waktu'      => '2025-06-03 12:05:00',
                 'qty'        => 3,
                 'hargaItem'  => 7000,
                 'hargaTotal' => 21000,
@@ -44,7 +44,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '13:20:00',
+                'waktu'      => '2025-07-27 13:20:00',
                 'qty'        => 1,
                 'hargaItem'  => 12000,
                 'hargaTotal' => 12000,
@@ -52,7 +52,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '14:10:00',
+                'waktu'      => '2025-07-28 14:06:00',
                 'qty'        => 4,
                 'hargaItem'  => 5000,
                 'hargaTotal' => 20000,
@@ -60,7 +60,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '15:45:00',
+                'waktu'      => '2025-07-29 15:45:00',
                 'qty'        => 2,
                 'hargaItem'  => 22000,
                 'hargaTotal' => 44000,
@@ -68,7 +68,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '16:30:00',
+                'waktu'      => '2025-07-29 16:30:00',
                 'qty'        => 1,
                 'hargaItem'  => 10000,
                 'hargaTotal' => 10000,
@@ -76,7 +76,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '17:00:00',
+                'waktu'      => '2025-06-01 17:00:00',
                 'qty'        => 2,
                 'hargaItem'  => 8000,
                 'hargaTotal' => 16000,
@@ -84,7 +84,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '18:15:00',
+                'waktu'      => '2025-06-01 18:15:00',
                 'qty'        => 1,
                 'hargaItem'  => 9000,
                 'hargaTotal' => 9000,
@@ -92,7 +92,7 @@ class TransaksiSeeder extends Seeder
             ]);
 
             Transaksi::create([
-                'waktu'      => '19:40:00',
+                'waktu'      => '2025-06-01 19:40:00',
                 'qty'        => 3,
                 'hargaItem'  => 8000,
                 'hargaTotal' => 24000,

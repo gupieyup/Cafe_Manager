@@ -37,6 +37,12 @@ Route::middleware('auth')->group(function () {
         Route::middleware('role:manajer')->prefix('manager')->name('manager.')->group(function () {
             Route::get('/home', [ManagerController::class, 'index'])->name('home');
             Route::get('/menu', [MenuController::class, 'index'])->name('menu');
+            Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
+            Route::put('/menu/{id}', [MenuController::class, 'update'])->name('menu.update');
+            Route::delete('/menu/{id}', [MenuController::class, 'destroy'])->name('menu.destroy');
+            Route::put('/menu/{id}/stock', [MenuController::class, 'updateStock'])->name('menu.stock');
+            Route::get('/menu/categories', [MenuController::class, 'getCategories'])->name('menu.categories');
+            Route::post('/menu/categories', [MenuController::class, 'addCategory'])->name('menu.addCategory');
             Route::get('/history', [HistoryManagerController::class, 'index'])->name('history');
 
     });

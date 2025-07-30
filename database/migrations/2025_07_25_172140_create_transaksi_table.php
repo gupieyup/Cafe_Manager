@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transaksi', function (Blueprint $table) {
             $table->id();
-            $table->time('waktu');
+            $table->dateTime('waktu');
             $table->integer('qty');
             $table->integer('hargaItem');
             $table->integer('hargaTotal');
