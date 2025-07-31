@@ -6,9 +6,10 @@ export default function Transaction({ kasir, menus, categories, flash }) {
     const [selectedCategory, setSelectedCategory] = useState("");
     const [searchTerm, setSearchTerm] = useState("");
     const [cart, setCart] = useState([]);
-    const [showCart, setShowCart] = useState(false);
     const [alerts, setAlerts] = useState([]);
     const [isProcessing, setIsProcessing] = useState(false);
+    const [showReceipt, setShowReceipt] = useState(false);
+    const [receiptData, setReceiptData] = useState(null);
     
     // Track flash messages to prevent duplicates
     const processedFlash = useRef(new Set());
@@ -43,9 +44,19 @@ export default function Transaction({ kasir, menus, categories, flash }) {
                 setTimeout(() => {
                     if (flash?.success) {
                         showAlert(flash.success, "success");
+                        // Generate receipt data and show receipt
+                        const receipt = {
+                            id: Date.now(),
+                            date: new Date().toLocaleDateString('id-ID'),
+                            time: new Date().toLocaleTimeString('id-ID'),
+                            items: cart,
+                            total: cartTotal,
+                            cashier: kasir.email
+                        };
+                        setReceiptData(receipt);
+                        setShowReceipt(true);
                         // Clear cart on successful transaction
                         setCart([]);
-                        setShowCart(false);
                     }
                     if (flash?.error) {
                         showAlert(flash.error, "error");
@@ -91,7 +102,6 @@ export default function Transaction({ kasir, menus, categories, flash }) {
         });
         
         showAlert(`${menu.namaMenu} ditambahkan ke keranjang`, "success");
-        setShowCart(true);
     };
 
     // Update cart item quantity
@@ -123,7 +133,6 @@ export default function Transaction({ kasir, menus, categories, flash }) {
     // Clear cart
     const clearCart = () => {
         setCart([]);
-        setShowCart(false);
     };
 
     // Calculate totals
@@ -157,6 +166,53 @@ export default function Transaction({ kasir, menus, categories, flash }) {
             style: "currency",
             currency: "IDR",
         }).format(number);
+    };
+
+    const printReceipt = () => {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+            <html>
+                <head>
+                    <title>Receipt #${receiptData.id}</title>
+                    <style>
+                        body { font-family: Arial, sans-serif; padding: 20px; }
+                        .receipt { max-width: 400px; margin: 0 auto; }
+                        .header { text-align: center; border-bottom: 2px solid #000; padding-bottom: 10px; }
+                        .item { display: flex; justify-content: space-between; margin: 5px 0; }
+                        .total { border-top: 2px solid #000; padding-top: 10px; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <div class="receipt">
+                        <div class="header">
+                            <h2>CAFE RECEIPT</h2>
+                            <p>Receipt #${receiptData.id}</p>
+                            <p>${receiptData.date} ${receiptData.time}</p>
+                            <p>Cashier: ${receiptData.cashier}</p>
+                        </div>
+                        <div class="items">
+                            ${receiptData.items.map(item => `
+                                <div class="item">
+                                    <span>${item.namaMenu} x${item.qty}</span>
+                                    <span>${formatRupiah(item.harga * item.qty)}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="total">
+                            <div class="item">
+                                <span>TOTAL</span>
+                                <span>${formatRupiah(receiptData.total)}</span>
+                            </div>
+                        </div>
+                        <div style="text-align: center; margin-top: 20px;">
+                            <p>Terima Kasih!</p>
+                        </div>
+                    </div>
+                </body>
+            </html>
+        `);
+        printWindow.document.close();
+        printWindow.print();
     };
 
     return (
@@ -213,6 +269,61 @@ export default function Transaction({ kasir, menus, categories, flash }) {
                 ))}
             </div>
 
+            {/* Receipt Modal */}
+            {showReceipt && receiptData && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-2xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
+                        <div className="text-center mb-6">
+                            <h2 className="text-2xl font-bold text-gray-900 mb-2">Transaksi Berhasil!</h2>
+                            <p className="text-gray-600">Receipt #{receiptData.id}</p>
+                        </div>
+                        
+                        <div className="border-2 border-gray-200 rounded-lg p-4 mb-6">
+                            <div className="text-center border-b border-gray-200 pb-4 mb-4">
+                                <h3 className="font-bold text-lg">CAFE RECEIPT</h3>
+                                <p className="text-sm text-gray-600">{receiptData.date} {receiptData.time}</p>
+                                <p className="text-sm text-gray-600">Cashier: {receiptData.cashier}</p>
+                            </div>
+                            
+                            <div className="space-y-2 mb-4">
+                                {receiptData.items.map((item, index) => (
+                                    <div key={index} className="flex justify-between text-sm">
+                                        <span>{item.namaMenu} x{item.qty}</span>
+                                        <span>{formatRupiah(item.harga * item.qty)}</span>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div className="border-t border-gray-200 pt-4">
+                                <div className="flex justify-between font-bold text-lg">
+                                    <span>TOTAL</span>
+                                    <span>{formatRupiah(receiptData.total)}</span>
+                                </div>
+                            </div>
+                            
+                            <div className="text-center mt-4 text-sm text-gray-600">
+                                <p>Terima Kasih!</p>
+                            </div>
+                        </div>
+                        
+                        <div className="flex gap-3">
+                            <button
+                                onClick={printReceipt}
+                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-xl transition-colors font-medium"
+                            >
+                                Print Receipt
+                            </button>
+                            <button
+                                onClick={() => setShowReceipt(false)}
+                                className="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-xl transition-colors font-medium"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             <div className="min-h-screen bg-gray-50/50">
                 <div className="max-w-7xl mx-auto p-6 space-y-8">
                     {/* Header */}
@@ -227,22 +338,10 @@ export default function Transaction({ kasir, menus, categories, flash }) {
                                 </p>
                             </div>
                             
-                            {/* Cart Summary */}
-                            <div className="flex items-center gap-4">
-                                <div className="bg-blue-50 px-4 py-2 rounded-xl border border-blue-200">
-                                    <div className="text-sm text-blue-600 font-medium">Items: {cartItemCount}</div>
-                                    <div className="text-lg font-bold text-blue-800">{formatRupiah(cartTotal)}</div>
-                                </div>
-                                
-                                <button
-                                    onClick={() => setShowCart(!showCart)}
-                                    className="relative flex items-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors font-medium shadow-sm"
-                                >
-                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m2.6 10L6 5H3m4 8a2 2 0 100 4 2 2 0 000-4zm10 0a2 2 0 100 4 2 2 0 000-4z" />
-                                    </svg>
-                                    Cart ({cartItemCount})
-                                </button>
+                            {/* Cart Summary - Removed Cart Button */}
+                            <div className="bg-blue-50 px-4 py-2 rounded-xl border border-blue-200">
+                                <div className="text-sm text-blue-600 font-medium">Items: {cartItemCount}</div>
+                                <div className="text-lg font-bold text-blue-800">{formatRupiah(cartTotal)}</div>
                             </div>
                         </div>
                     </div>
@@ -338,7 +437,7 @@ export default function Transaction({ kasir, menus, categories, flash }) {
 
                         {/* Shopping Cart */}
                         <div className="lg:col-span-1">
-                            <div className={`bg-white border border-gray-200/60 rounded-2xl shadow-sm transition-all duration-300 ${showCart ? 'ring-2 ring-blue-500/20' : ''}`}>
+                            <div className="bg-white border border-gray-200/60 rounded-2xl shadow-sm">
                                 <div className="p-6 border-b border-gray-200">
                                     <div className="flex items-center justify-between">
                                         <h2 className="text-xl font-semibold text-gray-900">Shopping Cart</h2>

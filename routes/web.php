@@ -47,6 +47,8 @@ Route::middleware('auth')->group(function () {
     // Manager routes
     Route::middleware('role:manajer')->prefix('manager')->name('manager.')->group(function () {
         Route::get('/home', [ManagerController::class, 'index'])->name('home');
+        
+        // Menu management
         Route::get('/menu', [MenuController::class, 'index'])->name('menu');
         Route::post('/menu', [MenuController::class, 'store'])->name('menu.store');
         Route::put('/menu/{id}', [MenuController::class, 'update'])->name('menu.update');
@@ -54,7 +56,11 @@ Route::middleware('auth')->group(function () {
         Route::put('/menu/{id}/stock', [MenuController::class, 'updateStock'])->name('menu.stock');
         Route::get('/menu/categories', [MenuController::class, 'getCategories'])->name('menu.categories');
         Route::post('/menu/categories', [MenuController::class, 'addCategory'])->name('menu.addCategory');
+        
+        // History and reports
         Route::get('/history', [HistoryManagerController::class, 'index'])->name('history');
+        Route::get('/history/receipt/{id}', [HistoryManagerController::class, 'downloadReceipt'])->name('history.receipt');
+        Route::get('/history/report', [HistoryManagerController::class, 'downloadReport'])->name('history.report');
     });
 
     // Kasir routes
@@ -66,6 +72,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/transaction', [TransactionController::class, 'store'])->name('transaction.store');
         Route::get('/menu/category/{category}', [TransactionController::class, 'getMenuByCategory'])->name('menu.category');
         
+        // History routes
         Route::get('/history', [HistoryController::class, 'index'])->name('history');
+        Route::get('/history/receipt/{id}', [HistoryController::class, 'downloadReceipt'])->name('history.receipt');
     });
 });

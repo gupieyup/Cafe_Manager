@@ -8,18 +8,23 @@ use Illuminate\Database\Eloquent\Model;
 class TransaksiMenu extends Model
 {
     use HasFactory;
-
+    
     protected $table = 'transaksi_menu';
+    
     protected $fillable = [
         'idTransaksi',
         'idMenu',
+        'qty',
+        'harga'
     ];
 
-    public function transaksi(){
+    public function transaksi()
+    {
         return $this->belongsTo(Transaksi::class, 'idTransaksi');
     }
 
-    public function menu(){
+    public function menu()
+    {
         return $this->belongsTo(Menu::class, 'idMenu');
     }
 }

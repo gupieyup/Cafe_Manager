@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('idTransaksi');
             $table->unsignedBigInteger('idMenu');
+            $table->integer('qty'); // Tambahkan kolom qty
+            $table->integer('harga'); // Tambahkan kolom harga
             $table->timestamps();
 
             $table->foreign('idTransaksi')->references('id')->on('transaksi')->onDelete('cascade');

@@ -36,28 +36,6 @@ class KasirController extends Controller
             ->whereMonth('waktu', Carbon::now()->month)
             ->sum('hargaTotal');
         
-        // Get recent transactions (last 5) for this cashier
-        $recentTransactions = Transaksi::with(['transaksiMenu.menu'])
-            ->where('idKasir', $kasir->id)
-            ->orderBy('waktu', 'desc')
-            ->take(5)
-            ->get()
-            ->map(function ($transaction) {
-                return [
-                    'id' => $transaction->id,
-                    'waktu' => $transaction->waktu,
-                    'qty' => $transaction->qty,
-                    'hargaTotal' => $transaction->hargaTotal,
-                    'items' => $transaction->transaksiMenu->map(function ($item) {
-                        return [
-                            'namaMenu' => $item->menu->namaMenu,
-                            'qty' => $item->qty,
-                            'harga' => $item->harga
-                        ];
-                    })
-                ];
-            });
-        
         // Get menu availability stats
         $totalMenus = Menu::count();
         $availableMenus = Menu::where('jumlahStok', '>', 0)->count();
@@ -65,6 +43,33 @@ class KasirController extends Controller
             ->where('jumlahStok', '<=', 5)
             ->count();
         $outOfStockMenus = Menu::where('jumlahStok', 0)->count();
+
+        // Data untuk chart transaksi harian (7 hari terakhir) - hanya untuk kasir ini
+        $startDate = Carbon::now()->subDays(6)->startOfDay(); 
+        $endDate = Carbon::now()->endOfDay();
+        
+        $dailyTransactions = Transaksi::selectRaw('DATE(waktu) as date, COUNT(*) as total_transaksi, SUM(hargaTotal) as total_pendapatan')
+            ->where('idKasir', $kasir->id)
+            ->whereBetween('waktu', [$startDate, $endDate])
+            ->groupBy('date')
+            ->orderBy('date')
+            ->get();
+
+        // Buat array untuk 7 hari terakhir dengan data 0 jika tidak ada transaksi
+        $dailyChart = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $currentDate = Carbon::now()->subDays($i);
+            $dateKey = $currentDate->format('Y-m-d');
+            $displayDate = $currentDate->format('d/m');
+            
+            $found = $dailyTransactions->firstWhere('date', $dateKey);
+            
+            $dailyChart[] = [
+                'date' => $displayDate,
+                'total_transaksi' => $found ? (int)$found->total_transaksi : 0,
+                'total_pendapatan' => $found ? (float)$found->total_pendapatan : 0
+            ];
+        }
 
         return Inertia::render('Kasir/Home/page', [
             'kasir' => $kasir,
@@ -80,7 +85,9 @@ class KasirController extends Controller
                 'lowStockMenus' => $lowStockMenus,
                 'outOfStockMenus' => $outOfStockMenus,
             ],
-            'recentTransactions' => $recentTransactions,
+            'chartData' => [
+                'daily' => $dailyChart,
+            ],
         ]);
     }
 }

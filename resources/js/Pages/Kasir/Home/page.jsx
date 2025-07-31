@@ -1,8 +1,9 @@
 import { Inertia } from "@inertiajs/inertia";
 import KasirLayout from "../../../Layouts/KasirLayout";
 import React from "react";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from "recharts";
 
-export default function Home({ kasir, statistics, menuStats, recentTransactions }) {
+export default function Home({ kasir, statistics, menuStats, chartData }) {
     const formatTime = () => {
         return new Date().toLocaleDateString('id-ID', {
             weekday: 'long',
@@ -17,16 +18,6 @@ export default function Home({ kasir, statistics, menuStats, recentTransactions 
             style: "currency",
             currency: "IDR",
         }).format(value);
-    };
-
-    const formatDateTime = (dateString) => {
-        return new Date(dateString).toLocaleString('id-ID', {
-            day: '2-digit',
-            month: '2-digit',
-            year: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
     };
 
     const navigateToTransaction = () => {
@@ -128,104 +119,67 @@ export default function Home({ kasir, statistics, menuStats, recentTransactions 
                         </div>
                     </div>
 
-                    {/* Data Overview */}
-                    <div className="grid grid-cols-1 gap-6 mb-8">
-                        {/* Menu Status */}
+                    {/* Charts Section */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        {/* Daily Transactions Chart */}
                         <div className="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/50 shadow-sm">
-                            <h2 className="text-xl font-semibold text-slate-800 mb-4">Menu Status</h2>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
-                                    <div className="text-2xl font-bold text-blue-600">{menuStats.availableMenus}</div>
-                                    <div className="text-sm text-blue-600">Available</div>
-                                </div>
-                                <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-200">
-                                    <div className="text-2xl font-bold text-amber-600">{menuStats.lowStockMenus}</div>
-                                    <div className="text-sm text-amber-600">Low Stock</div>
-                                </div>
-                                <div className="text-center p-4 bg-red-50 rounded-xl border border-red-200">
-                                    <div className="text-2xl font-bold text-red-600">{menuStats.outOfStockMenus}</div>
-                                    <div className="text-sm text-red-600">Out of Stock</div>
-                                </div>
-                                <div className="text-center p-4 bg-gray-50 rounded-xl border border-gray-200">
-                                    <div className="text-2xl font-bold text-gray-600">{menuStats.totalMenus}</div>
-                                    <div className="text-sm text-gray-600">Total Menu</div>
-                                </div>
-                            </div>
+                            <h2 className="text-xl font-semibold text-slate-800 mb-4">Transaksi 7 Hari Terakhir</h2>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <LineChart data={chartData.daily}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip />
+                                    <Line 
+                                        type="monotone" 
+                                        dataKey="total_transaksi" 
+                                        stroke="#3B82F6" 
+                                        strokeWidth={2}
+                                        name="Transaksi"
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+
+                        {/* Daily Revenue Chart */}
+                        <div className="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/50 shadow-sm">
+                            <h2 className="text-xl font-semibold text-slate-800 mb-4">Pendapatan 7 Hari Terakhir</h2>
+                            <ResponsiveContainer width="100%" height={300}>
+                                <BarChart data={chartData.daily}>
+                                    <CartesianGrid strokeDasharray="3 3" />
+                                    <XAxis dataKey="date" />
+                                    <YAxis />
+                                    <Tooltip formatter={(value) => formatCurrency(value)} />
+                                    <Bar 
+                                        dataKey="total_pendapatan" 
+                                        fill="#10B981"
+                                        name="Pendapatan"
+                                    />
+                                </BarChart>
+                            </ResponsiveContainer>
                         </div>
                     </div>
 
-                    {/* Recent Transactions */}
-                    <div className="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/50 shadow-sm mb-8">
-                        <div className="flex items-center justify-between mb-4">
-                            <h2 className="text-xl font-semibold text-slate-800">Recent Transactions</h2>
-                            <button
-                                onClick={navigateToHistory}
-                                className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-                            >
-                                View All
-                            </button>
-                        </div>
-                        
-                        <div className="overflow-x-auto">
-                            <table className="min-w-full">
-                                <thead>
-                                    <tr className="bg-gray-50/50 border-b border-gray-200/60">
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            ID
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Waktu
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Items
-                                        </th>
-                                        <th className="px-4 py-3 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                                            Total
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-200/60">
-                                    {recentTransactions.length > 0 ? (
-                                        recentTransactions.map((transaction) => (
-                                            <tr key={transaction.id} className="hover:bg-gray-50/50 transition-colors">
-                                                <td className="px-4 py-3">
-                                                    <span className="font-medium text-gray-900">#{transaction.id}</span>
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <span className="text-sm text-gray-600">
-                                                        {formatDateTime(transaction.waktu)}
-                                                    </span>
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <div className="text-sm text-gray-600">
-                                                        {transaction.items.slice(0, 2).map((item, index) => (
-                                                            <div key={index}>
-                                                                {item.namaMenu} x{item.qty}
-                                                            </div>
-                                                        ))}
-                                                        {transaction.items.length > 2 && (
-                                                            <div className="text-xs text-gray-500">
-                                                                +{transaction.items.length - 2} more items
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                </td>
-                                                <td className="px-4 py-3">
-                                                    <span className="font-semibold text-gray-900">
-                                                        {formatCurrency(transaction.hargaTotal)}
-                                                    </span>
-                                                </td>
-                                            </tr>
-                                        ))
-                                    ) : (
-                                        <tr>
-                                            <td colSpan="4" className="px-4 py-8 text-center text-gray-500">
-                                                No transactions yet
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                    {/* Menu Status */}
+                    <div className="bg-white/70 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/50 shadow-sm">
+                        <h2 className="text-xl font-semibold text-slate-800 mb-4">Menu Status</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="text-center p-4 bg-blue-50 rounded-xl border border-blue-200">
+                                <div className="text-2xl font-bold text-blue-600">{menuStats.availableMenus}</div>
+                                <div className="text-sm text-blue-600">Available</div>
+                            </div>
+                            <div className="text-center p-4 bg-amber-50 rounded-xl border border-amber-200">
+                                <div className="text-2xl font-bold text-amber-600">{menuStats.lowStockMenus}</div>
+                                <div className="text-sm text-amber-600">Low Stock</div>
+                            </div>
+                            <div className="text-center p-4 bg-red-50 rounded-xl border border-red-200">
+                                <div className="text-2xl font-bold text-red-600">{menuStats.outOfStockMenus}</div>
+                                <div className="text-sm text-red-600">Out of Stock</div>
+                            </div>
+                            <div className="text-center p-4 bg-gray-50 rounded-xl border border-gray-200">
+                                <div className="text-2xl font-bold text-gray-600">{menuStats.totalMenus}</div>
+                                <div className="text-sm text-gray-600">Total Menu</div>
+                            </div>
                         </div>
                     </div>
                 </div>
