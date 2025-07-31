@@ -346,6 +346,9 @@ export default function Menu({ manager, menus, flash }) {
                                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                                     Menu Management
                                 </h1>
+                                <p className="text-slate-500 mt-1 text-sm">
+                                    Centralized menu data management and stock monitoring.
+                                </p>
                             </div>
                         </div>
                     </div>

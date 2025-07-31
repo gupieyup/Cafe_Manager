@@ -3,7 +3,6 @@ import { Inertia } from "@inertiajs/inertia";
 import { FaHome } from "react-icons/fa";
 import { MdFastfood } from "react-icons/md";
 import { TbLogout } from "react-icons/tb";
-import { IoReceipt } from "react-icons/io5";
 import { FaHistory } from "react-icons/fa";
 
 const SidebarManager = ({ manager }) => {

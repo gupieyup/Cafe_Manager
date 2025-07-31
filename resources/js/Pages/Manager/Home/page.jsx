@@ -36,11 +36,11 @@ export default function Home({ manager, chartData, statistics }) {
                     {/* Header */}
                     <div className="mb-8">
                         <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/50 shadow-sm">
-                            <h1 className="text-3xl font-light text-slate-800 tracking-tight">
-                                Dashboard Manager
+                            <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                                    Dashboard Manager
                             </h1>
                             <p className="text-slate-500 mt-1 text-sm">
-                                Overview statistik dan analisis bisnis
+                                Overview of business statistics and analysis
                             </p>
                         </div>
                     </div>
