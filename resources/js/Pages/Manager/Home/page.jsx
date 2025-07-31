@@ -37,10 +37,10 @@ export default function Home({ manager, chartData, statistics }) {
                     <div className="mb-8">
                         <div className="bg-white/80 backdrop-blur-sm p-6 rounded-2xl border border-slate-200/50 shadow-sm">
                             <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                                    Dashboard Manager
+                                    Manager Dashboard
                             </h1>
                             <p className="text-slate-500 mt-1 text-sm">
-                                Overview of business statistics and analysis
+                                Welcome Back,  {manager.email}
                             </p>
                         </div>
                     </div>
