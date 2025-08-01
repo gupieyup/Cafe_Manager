@@ -18,5 +18,4 @@ const ManagerLayout = ({ children, manager }) => {
         </html>
     );
 };
-
 export default ManagerLayout;
